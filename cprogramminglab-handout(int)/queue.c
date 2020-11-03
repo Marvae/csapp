@@ -39,6 +39,16 @@ void q_free(queue_t *q)
 {
     /* How about freeing the list elements? */
     /* Free queue structure */
+    if (!q)
+    {
+      return;
+    }
+    while (q->head)
+    {
+      list_ele_t *ele_free = q->head;
+      q->head = q->head->next;
+      free(ele_free); 
+    }
     free(q);
 }
 
@@ -117,7 +127,14 @@ bool q_remove_head(queue_t *q, int *vp)
     {
       return false;
     }
+    list_ele_t *ele_remove = q->head;
+    if (!vp)
+    {
+      vp = ele_remove->value;
+    }
+    free(ele_remove);
     q->head = q->head->next;
+    q->size--;
     return true;
 }
 
@@ -146,5 +163,20 @@ int q_size(queue_t *q)
 void q_reverse(queue_t *q)
 {
     /* You need to write the code for this function */
+    if (q)
+    {
+      list_ele_t *previous = NULL;
+      list_ele_t *current = q->head;
+      list_ele_t *next = q->head->next;
+      q->tail = current;
+      while (current)
+      {
+        current->next = previous;
+        previous = current;
+        current = next;
+        next = current->next;
+      }
+      q->head = previous;
+    }
 }
 
