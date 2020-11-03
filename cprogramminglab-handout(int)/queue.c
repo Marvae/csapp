@@ -24,7 +24,13 @@ queue_t *q_new()
 {
     queue_t *q =  malloc(sizeof(queue_t));
     /* What if malloc returned NULL? */
+    if(!q) 
+    {
+      return NULL;
+    }
     q->head = NULL;
+    q->tail = NULL;
+    q->size = 0;
     return q;
 }
 
@@ -45,11 +51,24 @@ bool q_insert_head(queue_t *q, int v)
 {
     list_ele_t *newh;
     /* What should you do if the q is NULL? */
+    if (!q) 
+    {
+      return false;
+    }
     newh = malloc(sizeof(list_ele_t));
     /* What if malloc returned NULL? */
+    if (!newh) 
+    {
+      return false;
+    }
     newh->value = v;
     newh->next = q->head;
     q->head = newh;
+    if (!q->size)
+    {
+      q->tail = newh;
+    }
+    q->size++;
     return true;
 }
 
@@ -63,7 +82,25 @@ bool q_insert_tail(queue_t *q, int v)
 {
     /* You need to write the complete code for this function */
     /* Remember: It should operate in O(1) time */
-    return false;
+    if (!q)
+    {
+      return false;
+    }
+    list_ele_t *newt;
+    newt = malloc(sizeof(list_ele_t));
+    if (!newt) 
+    {
+      return false;
+    }
+    newt->value = v;
+    newt->next = q->tail->next;
+    q->tail->next = newt;
+    if (!q->size)
+    {
+      q->head = newt;
+    }
+    q->size++;
+    return true;
 }
 
 /*
@@ -76,6 +113,10 @@ bool q_insert_tail(queue_t *q, int v)
 bool q_remove_head(queue_t *q, int *vp)
 {
     /* You need to fix up this code. */
+    if (!q||!q->head)
+    {
+      return false;
+    }
     q->head = q->head->next;
     return true;
 }
@@ -88,6 +129,10 @@ int q_size(queue_t *q)
 {
     /* You need to write the code for this function */
     /* Remember: It should operate in O(1) time */
+    if (q) 
+    {
+      return q->size;
+    }
     return 0;
 }
 
